@@ -1,0 +1,66 @@
+---
+title: "APMA 3150 Final Project: A Comprehensive Analysis of NBA Statistics and Salaries"
+author: "Farhan Khan (crg3ts), Ronit Reddy (kus4ws), Zohaib Khalid (cxk3hk)"
+date: "2024-04-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+Install Libraries
+```{r message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(RColorBrewer)
+```
+
+Load and Transform Data
+```{r}
+nba_data <- read.csv("nba_2022-23_all_stats_with_salary.csv")
+
+statistics_and_salaries <- nba_data %>% 
+  select(Salary, GP:VORP)
+
+head(statistics_and_salaries)
+```
+
+Generate Correlation Heatmap
+```{r}
+cor_matrix <- cor(statistics_and_salaries, use = "complete.obs")
+
+melted_cor_matrix <- melt(cor_matrix)
+
+ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "red", high = "green", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12),
+    axis.text.x = element_text(size = 4, hjust = 1, vjust = 1, angle = 45, color = "black"),
+    axis.text.y = element_text(size = 4, color = "black"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 8),
+    legend.text = element_text(size = 6)
+  ) +
+  labs(title = "Correlation Heatmap of NBA Player Statistics and Salaries", x = '', y = '') +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 1, color = "black")
+```
+
+View Correlations Between Statistics and Salaries (in Descending Order)
+```{r}
+salary_correlations <- cor_matrix["Salary", ]
+sorted_salary_correlations <- sort(salary_correlations, decreasing = TRUE)
+
+sorted_salary_correlations
+```
