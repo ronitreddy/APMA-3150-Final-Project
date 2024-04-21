@@ -6,4 +6,5 @@
 
 ## Submission Requirements
 - **[Final Project - Stage 2: Poster]()**
+- **[Final Project - Stage 3: RMarkdown]()**
 - **[Final Project - Stage 3: Report]()**
