@@ -1,5 +1,5 @@
 ---
-title: "APMA 3150 Final Project: A Comprehensive Analysis of NBA Statistics and Salaries"
+title: "APMA 3150 Final Project: A Comprehensive Analysis of NBA Players' Statistics and Salaries"
 author: "Farhan Khan (crg3ts), Ronit Reddy (kus4ws), Zohaib Khalid (cxk3hk)"
 date: "2024-04-16"
 output: html_document
@@ -27,21 +27,73 @@ Load and Transform Data
 ```{r}
 nba_data <- read.csv("nba_2022-23_all_stats_with_salary.csv")
 
-statistics_and_salaries <- nba_data %>% 
-  select(Salary, GP:VORP)
+full_statistics <- nba_data %>% select(Salary, GP:VORP)
+head(full_statistics)
 
-head(statistics_and_salaries)
+basic_statistics <- nba_data %>% select(Salary, GP:X2P., FT:Total.Minutes)
+head(basic_statistics)
+
+#Used this link: https://faq.stathead.com/knowledge/basketball-advanced-stats to determine the advanced statistics
+advanced_statistics <- nba_data %>% select(Salary, eFG., PER:VORP)
+head(advanced_statistics)
+```
+Generate Correlation Heatmap (for Basic Statistics)
+```{r}
+basic_correlation_matrix <- cor(basic_statistics, use = "complete.obs")
+
+melted_basic_correlation_matrix <- melt(basic_correlation_matrix)
+
+ggplot(data = melted_basic_correlation_matrix, aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12),
+    axis.text.x = element_text(size = 6, hjust = 1, vjust = 1, angle = 45, color = "black"),
+    axis.text.y = element_text(size = 6, color = "black"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 8),
+    legend.text = element_text(size = 6)
+  ) +
+  labs(title = "Correlation Heatmap of NBA Players' Basic Statistics and Salaries", x = '', y = '') +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 2, color = "black")
 ```
 
-Generate Correlation Heatmap
+Generate Correlation Heatmap (for Advanced Statistics)
 ```{r}
-cor_matrix <- cor(statistics_and_salaries, use = "complete.obs")
+advanced_correlation_matrix <- cor(advanced_statistics, use = "complete.obs")
 
-melted_cor_matrix <- melt(cor_matrix)
+melted_advanced_correlation_matrix <- melt(advanced_correlation_matrix)
 
-ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
+ggplot(data = melted_advanced_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(low = "red", high = "green", mid = "white", 
+  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+                       midpoint = 0, limit = c(-1,1), space = "Lab", 
+                       name="Correlation") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12),
+    axis.text.x = element_text(size = 6, hjust = 1, vjust = 1, angle = 45, color = "black"),
+    axis.text.y = element_text(size = 6, color = "black"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.title = element_text(size = 8),
+    legend.text = element_text(size = 6)
+  ) +
+  labs(title = "Correlation Heatmap of NBA Players' Advanced Statistics and Salaries", x = '', y = '') +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 2, color = "black")
+```
+
+Generate Correlation Heatmap (for Full Statistics)
+```{r}
+full_correlation_matrix <- cor(full_statistics, use = "complete.obs")
+
+melted_full_correlation_matrix <- melt(full_correlation_matrix)
+
+ggplot(data = melted_full_correlation_matrix, aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
   theme_minimal() +
@@ -53,14 +105,13 @@ ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
     legend.title = element_text(size = 8),
     legend.text = element_text(size = 6)
   ) +
-  labs(title = "Correlation Heatmap of NBA Player Statistics and Salaries", x = '', y = '') +
+  labs(title = "Correlation Heatmap of NBA Players' Full Statistics and Salaries", x = '', y = '') +
   geom_text(aes(label = sprintf("%.2f", value)), size = 1, color = "black")
 ```
 
-View Correlations Between Statistics and Salaries (in Descending Order)
+View Correlations Between All Statistics and Salaries (in Descending Order)
 ```{r}
-salary_correlations <- cor_matrix["Salary", ]
+salary_correlations <- full_correlation_matrix["Salary", ]
 sorted_salary_correlations <- sort(salary_correlations, decreasing = TRUE)
-
 sorted_salary_correlations
 ```
