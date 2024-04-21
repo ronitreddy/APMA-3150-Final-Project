@@ -37,6 +37,7 @@ head(basic_statistics)
 advanced_statistics <- nba_data %>% select(Salary, eFG., PER:VORP)
 head(advanced_statistics)
 ```
+
 Generate Correlation Heatmap (for Basic Statistics)
 ```{r}
 basic_correlation_matrix <- cor(basic_statistics, use = "complete.obs")
@@ -45,7 +46,8 @@ melted_basic_correlation_matrix <- melt(basic_correlation_matrix)
 
 ggplot(data = melted_basic_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+  #Manually imputed HEX color values to match NBA logo color scheme
+  scale_fill_gradient2(low = "#da1a33", mid = "#ffffff", high = "#00428c", 
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
   theme_minimal() +
@@ -69,7 +71,8 @@ melted_advanced_correlation_matrix <- melt(advanced_correlation_matrix)
 
 ggplot(data = melted_advanced_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+  #Manually imputed HEX color values to match NBA logo color scheme
+  scale_fill_gradient2(low = "#da1a33", mid = "#ffffff", high = "#00428c",
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
   theme_minimal() +
@@ -93,7 +96,8 @@ melted_full_correlation_matrix <- melt(full_correlation_matrix)
 
 ggplot(data = melted_full_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+  #Manually imputed HEX color values to match NBA logo color scheme
+  scale_fill_gradient2(low = "#da1a33", mid = "#ffffff", high = "#00428c",
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
   theme_minimal() +
@@ -109,7 +113,7 @@ ggplot(data = melted_full_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_text(aes(label = sprintf("%.2f", value)), size = 1, color = "black")
 ```
 
-View Correlations Between All Statistics and Salaries (in Descending Order)
+View Correlations Between Full Statistics and Salaries (in Descending Order)
 ```{r}
 salary_correlations <- full_correlation_matrix["Salary", ]
 sorted_salary_correlations <- sort(salary_correlations, decreasing = TRUE)
