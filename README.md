@@ -7,4 +7,4 @@
 ## Submission Requirements
 - **[Final Project - Stage 2: Poster]()**
 - **[Final Project - Stage 3: RMarkdown](https://github.com/ronitreddy/APMA_3150_Final_Project/blob/main/Khalid1_Khan2_Reddy3_Project.Rmd)**
-- **[Final Project - Stage 3: Report]()**
+- **[Final Project - Stage 3: Report](https://docs.google.com/document/d/1PowtOVay7OfZ4xUd6Z1rmCKT6jiGK1zTTICGYeMbS38/edit?usp=sharing)**
