@@ -1,6 +1,6 @@
 ---
 title: "APMA 3150 Final Project: A Comprehensive Analysis of NBA Players' Statistics and Salaries"
-author: "Farhan Khan (crg3ts), Ronit Reddy (kus4ws), Zohaib Khalid (cxk3hk)"
+author: "Zohaib Khalid (cxk3hk), Farhan Khan (crg3ts), Ronit Reddy (kus4ws)"
 date: "2024-04-16"
 output: html_document
 ---
