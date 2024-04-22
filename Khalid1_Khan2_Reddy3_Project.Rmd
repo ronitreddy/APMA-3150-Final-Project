@@ -21,6 +21,7 @@ library(dplyr)
 library(ggplot2)
 library(reshape2)
 library(RColorBrewer)
+library(scales)
 ```
 
 Load and Transform Data
@@ -129,8 +130,26 @@ summary(model)
 model_correlation <- sqrt(summary(model)$r.squared)
 model_correlation
 ```
-Plot Multiple Regression Model (for Analysis of Outliers or High Leverage Observations)
+Plot Multiple Regression Model Diagnostics (for Analysis of Outliers or High Leverage Observations)
 ```{r}
 par(mfrow=c(2,2))
 plot(model)
+```
+
+Plot Multiple Regression Model (Actual vs. Predicted Values)
+```{r}
+nba_data$predicted_salary <- predict(model, newdata = nba_data)
+
+ggplot(nba_data, aes(x = Salary, y = predicted_salary)) +
+  geom_point(alpha = 0.5, color = "#00428c") +
+  geom_abline(intercept = 0, slope = 1, color = "#da1a33") +
+  scale_x_continuous(labels = label_comma()) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(x = "Actual Salary", y = "Predicted Salary", title = "Actual vs. Predicted Salary") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12),
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8),
+    )
 ```
