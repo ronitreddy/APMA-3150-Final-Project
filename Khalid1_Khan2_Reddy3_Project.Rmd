@@ -1,6 +1,6 @@
 ---
 title: "APMA 3150 Final Project: A Comprehensive Analysis of NBA Players' Statistics and Salaries"
-author: "Zohaib Khalid, Farhan Khan, Ronit Reddy"
+authors: "Zohaib Khalid, Farhan Khan, Ronit Reddy"
 date: "2024-04-16"
 output: html_document
 ---
@@ -46,7 +46,7 @@ melted_basic_correlation_matrix <- melt(basic_correlation_matrix)
 
 ggplot(data = melted_basic_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  #Manually imputed HEX color values to match NBA logo color scheme
+  #Specified HEX color values to match NBA logo color scheme
   scale_fill_gradient2(low = "#da1a33", mid = "#ffffff", high = "#00428c", 
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
@@ -71,7 +71,7 @@ melted_advanced_correlation_matrix <- melt(advanced_correlation_matrix)
 
 ggplot(data = melted_advanced_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  #Manually imputed HEX color values to match NBA logo color scheme
+  #Specified HEX color values to match NBA logo color scheme
   scale_fill_gradient2(low = "#da1a33", mid = "#ffffff", high = "#00428c",
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
@@ -96,7 +96,7 @@ melted_full_correlation_matrix <- melt(full_correlation_matrix)
 
 ggplot(data = melted_full_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_tile() +
-  #Manually imputed HEX color values to match NBA logo color scheme
+  #Specified HEX color values to match NBA logo color scheme
   scale_fill_gradient2(low = "#da1a33", mid = "#ffffff", high = "#00428c",
                        midpoint = 0, limit = c(-1,1), space = "Lab", 
                        name="Correlation") +
@@ -120,4 +120,17 @@ sorted_salary_correlations <- sort(salary_correlations, decreasing = TRUE)
 sorted_salary_correlations
 ```
 
-Integrate 
+Fit Multiple Regression Model
+```{r}
+model <- lm(Salary ~ PTS + FG + VORP + X2P + FT, data = nba_data)
+summary(model)
+
+#Referenced this link: https://www.statology.org/r-vs-r-squared/ to calculate the approximate model correlation
+model_correlation <- sqrt(summary(model)$r.squared)
+model_correlation
+```
+Plot Multiple Regression Model (for Analysis of Outliers or High Leverage Observations)
+```{r}
+par(mfrow=c(2,2))
+plot(model)
+```
