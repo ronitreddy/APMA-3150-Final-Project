@@ -1,6 +1,6 @@
 ---
 title: "APMA 3150 Final Project: A Comprehensive Analysis of NBA Players' Statistics and Salaries"
-author: "Zohaib Khalid (cxk3hk), Farhan Khan (crg3ts), Ronit Reddy (kus4ws)"
+author: "Zohaib Khalid, Farhan Khan, Ronit Reddy"
 date: "2024-04-16"
 output: html_document
 ---
@@ -119,3 +119,5 @@ salary_correlations <- full_correlation_matrix["Salary", ]
 sorted_salary_correlations <- sort(salary_correlations, decreasing = TRUE)
 sorted_salary_correlations
 ```
+
+Integrate 
