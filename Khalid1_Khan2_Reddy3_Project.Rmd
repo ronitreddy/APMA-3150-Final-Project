@@ -22,6 +22,7 @@ library(ggplot2)
 library(reshape2)
 library(RColorBrewer)
 library(scales)
+library(boot)
 ```
 
 Load and Transform Data
@@ -61,8 +62,9 @@ anova_model <- aov(Salary ~ Position, data = nba_data)
 summary(anova_model)
 ```
 
-Perform Tukey's Test (to Identify Positions with Statistically Signifiance Differences in Mean Salaries)
+Perform Tukey's Test
 ```{r}
+#Use the results to identify the positions with statistically significant differences in mean salaries
 tukey_results <- TukeyHSD(anova_model)
 tukey_results
 ```
@@ -86,7 +88,7 @@ ggplot(tukey_data, aes(x = Comparison, y = diff)) +
   scale_y_continuous(labels = label_comma())
 ```
 
-Generate Correlation Heatmap (for Basic Statistics)
+Generate Correlation Heatmap for Basic Statistics
 ```{r}
 basic_correlation_matrix <- cor(basic_statistics, use = "complete.obs")
 melted_basic_correlation_matrix <- melt(basic_correlation_matrix)
@@ -110,7 +112,7 @@ ggplot(data = melted_basic_correlation_matrix, aes(Var1, Var2, fill = value)) +
   geom_text(aes(label = sprintf("%.2f", value)), size = 2)
 ```
 
-Generate Correlation Heatmap (for Advanced Statistics)
+Generate Correlation Heatmap for Advanced Statistics
 ```{r}
 advanced_correlation_matrix <- cor(advanced_statistics, use = "complete.obs")
 melted_advanced_correlation_matrix <- melt(advanced_correlation_matrix)
@@ -134,7 +136,7 @@ ggplot(data = melted_advanced_correlation_matrix, aes(Var1, Var2, fill = value))
   geom_text(aes(label = sprintf("%.2f", value)), size = 2)
 ```
 
-Generate Correlation Heatmap (for Full Statistics)
+Generate Correlation Heatmap for Full Statistics
 ```{r}
 full_correlation_matrix <- cor(full_statistics, use = "complete.obs")
 melted_full_correlation_matrix <- melt(full_correlation_matrix)
@@ -202,3 +204,34 @@ ggplot(nba_data, aes(x = Salary, y = predicted_salary)) +
     plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm")
     )
 ```
+
+Perform Bootstrapping on Multiple Regression Model
+```{r}
+#Referenced this link: https://www.statmethods.net/advstats/bootstrapping.html for information on bootstrapping
+bs <- function(formula, data, indices) {
+  d <- data[indices, ]
+  model <- lm(formula, data = d)
+  return(coef(model))
+}
+
+set.seed(123)
+bootstrap_results <- boot(data = nba_data, statistic = bs, R = 1000, formula = Salary ~ PTS + FG + VORP)
+bootstrap_results
+```
+
+Derive Confidence Intervals from Bootstrap Results
+```{r}
+boot.ci(bootstrap_results, type = "bca", index = 1) #Intercept
+boot.ci(bootstrap_results, type = "bca", index = 2) #PTS
+boot.ci(bootstrap_results, type = "bca", index = 3) #FG
+boot.ci(bootstrap_results, type = "bca", index = 4) #VORP
+```
+
+Plot Bootstrap Results
+```{r}
+plot(bootstrap_results, index = 1) #Intercept
+plot(bootstrap_results, index = 2) #PTS
+plot(bootstrap_results, index = 3) #FG
+plot(bootstrap_results, index = 4) #VORP
+```
+
