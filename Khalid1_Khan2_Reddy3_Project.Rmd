@@ -38,11 +38,55 @@ head(basic_statistics)
 advanced_statistics <- nba_data %>% select(Salary, eFG., PER:VORP)
 head(advanced_statistics)
 ```
+Plot Salaries by Position
+```{r}
+nba_data$Position <- factor(nba_data$Position, levels = c("PG", "PG-SG", "SG", "SG-PG", "SF", "SF-SG", "SF-PF", "PF", "C"))
+
+ggplot(nba_data, aes(x = Position, y = Salary)) +
+  geom_boxplot(outlier.shape = 1) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "Salaries by Position", x = "Position", y = "Salary") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+Perform ANOVA Test
+```{r}
+#If the p-value is less than the significance level (0.05), conclude that there is a statistically significant difference in salaries among the different positions
+anova_model <- aov(Salary ~ Position, data = nba_data)
+summary(anova_model)
+```
+Perform Tukey's Test (to Identify Positions with Statistically Signifiance Differences in Mean Salaries)
+```{r}
+tukey_results <- TukeyHSD(anova_model)
+tukey_results
+```
+
+Plot Results of Tukey's Test
+```{r}
+tukey_data <- as.data.frame(TukeyHSD(anova_model)$Position)
+tukey_data$Comparison <- row.names(tukey_data)
+
+ggplot(tukey_data, aes(x = Comparison, y = diff)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2) +
+  geom_point() +
+  coord_flip() +
+  labs(x = "Difference in Mean Levels of Position", y = "", title = "95% Family-Wise Confidence Level") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 12),
+    axis.text.x = element_text(size = 6, hjust = 1, angle = 45),
+    axis.text.y = element_text(size = 6, hjust = 1)
+  ) +
+  scale_y_continuous(labels = label_comma())
+```
 
 Generate Correlation Heatmap (for Basic Statistics)
 ```{r}
 basic_correlation_matrix <- cor(basic_statistics, use = "complete.obs")
-
 melted_basic_correlation_matrix <- melt(basic_correlation_matrix)
 
 ggplot(data = melted_basic_correlation_matrix, aes(Var1, Var2, fill = value)) +
@@ -54,20 +98,19 @@ ggplot(data = melted_basic_correlation_matrix, aes(Var1, Var2, fill = value)) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 12),
-    axis.text.x = element_text(size = 6, hjust = 1, vjust = 1, angle = 45, color = "black"),
-    axis.text.y = element_text(size = 6, color = "black"),
+    axis.text.x = element_text(size = 6, hjust = 1, vjust = 1, angle = 45),
+    axis.text.y = element_text(size = 6),
     legend.key.size = unit(0.5, "cm"),
     legend.title = element_text(size = 8),
     legend.text = element_text(size = 6)
   ) +
-  labs(title = "Correlation Heatmap of NBA Players' Basic Statistics and Salaries", x = '', y = '') +
-  geom_text(aes(label = sprintf("%.2f", value)), size = 2, color = "black")
+  labs(title = "Correlation Heatmap of Basic Statistics and Salaries", x = "", y = "") +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 2)
 ```
 
 Generate Correlation Heatmap (for Advanced Statistics)
 ```{r}
 advanced_correlation_matrix <- cor(advanced_statistics, use = "complete.obs")
-
 melted_advanced_correlation_matrix <- melt(advanced_correlation_matrix)
 
 ggplot(data = melted_advanced_correlation_matrix, aes(Var1, Var2, fill = value)) +
@@ -79,20 +122,19 @@ ggplot(data = melted_advanced_correlation_matrix, aes(Var1, Var2, fill = value))
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 12),
-    axis.text.x = element_text(size = 6, hjust = 1, vjust = 1, angle = 45, color = "black"),
-    axis.text.y = element_text(size = 6, color = "black"),
+    axis.text.x = element_text(size = 6, hjust = 1, vjust = 1, angle = 45),
+    axis.text.y = element_text(size = 6),
     legend.key.size = unit(0.5, "cm"),
     legend.title = element_text(size = 8),
     legend.text = element_text(size = 6)
   ) +
-  labs(title = "Correlation Heatmap of NBA Players' Advanced Statistics and Salaries", x = '', y = '') +
-  geom_text(aes(label = sprintf("%.2f", value)), size = 2, color = "black")
+  labs(title = "Correlation Heatmap of Advanced Statistics and Salaries", x = "", y = "") +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 2)
 ```
 
 Generate Correlation Heatmap (for Full Statistics)
 ```{r}
 full_correlation_matrix <- cor(full_statistics, use = "complete.obs")
-
 melted_full_correlation_matrix <- melt(full_correlation_matrix)
 
 ggplot(data = melted_full_correlation_matrix, aes(Var1, Var2, fill = value)) +
@@ -104,14 +146,14 @@ ggplot(data = melted_full_correlation_matrix, aes(Var1, Var2, fill = value)) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 12),
-    axis.text.x = element_text(size = 4, hjust = 1, vjust = 1, angle = 45, color = "black"),
-    axis.text.y = element_text(size = 4, color = "black"),
+    axis.text.x = element_text(size = 4, hjust = 1, vjust = 1, angle = 45),
+    axis.text.y = element_text(size = 4),
     legend.key.size = unit(0.5, "cm"),
     legend.title = element_text(size = 8),
     legend.text = element_text(size = 6)
   ) +
-  labs(title = "Correlation Heatmap of NBA Players' Full Statistics and Salaries", x = '', y = '') +
-  geom_text(aes(label = sprintf("%.2f", value)), size = 1, color = "black")
+  labs(title = "Correlation Heatmap of Full Statistics and Salaries", x = "", y = "") +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 1)
 ```
 
 View Correlations Between Full Statistics and Salaries (in Descending Order)
@@ -123,17 +165,18 @@ sorted_salary_correlations
 
 Fit Multiple Regression Model
 ```{r}
-model <- lm(Salary ~ PTS + FG + VORP + X2P + FT, data = nba_data)
-summary(model)
+linear_model <- lm(Salary ~ PTS + FG + VORP + X2P + FT, data = nba_data)
+summary(linear_model)
 
-#Referenced this link: https://www.statology.org/r-vs-r-squared/ to calculate the approximate model correlation
-model_correlation <- sqrt(summary(model)$r.squared)
+#Referenced this link: https://www.statology.org/r-vs-r-squared/ to approximate the model correlation
+model_correlation <- sqrt(summary(linear_model)$r.squared)
 model_correlation
 ```
+
 Plot Multiple Regression Model Diagnostics (for Analysis of Outliers or High Leverage Observations)
 ```{r}
 par(mfrow=c(2,2))
-plot(model)
+plot(linear_model)
 ```
 
 Plot Multiple Regression Model (Actual vs. Predicted Values)
@@ -141,15 +184,19 @@ Plot Multiple Regression Model (Actual vs. Predicted Values)
 nba_data$predicted_salary <- predict(model, newdata = nba_data)
 
 ggplot(nba_data, aes(x = Salary, y = predicted_salary)) +
+  #Specified HEX color values to match NBA logo color scheme
   geom_point(alpha = 0.5, color = "#00428c") +
   geom_abline(intercept = 0, slope = 1, color = "#da1a33") +
   scale_x_continuous(labels = label_comma()) +
   scale_y_continuous(labels = label_comma()) +
-  labs(x = "Actual Salary", y = "Predicted Salary", title = "Actual vs. Predicted Salary") +
+  labs(x = "Actual Salary", y = "Predicted Salary", title = "Actual vs. Predicted Salaries") +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 12),
-    axis.text.x = element_text(size = 8),
-    axis.text.y = element_text(size = 8),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10),
+    axis.text.x = element_text(size = 6),
+    axis.text.y = element_text(size = 6),
+    plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm")
     )
 ```
