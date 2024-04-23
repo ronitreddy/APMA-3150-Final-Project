@@ -183,7 +183,7 @@ plot(linear_model)
 
 Plot Multiple Regression Model (Actual vs. Predicted Values)
 ```{r}
-nba_data$predicted_salary <- predict(model, newdata = nba_data)
+nba_data$predicted_salary <- predict(linear_model, newdata = nba_data)
 
 ggplot(nba_data, aes(x = Salary, y = predicted_salary)) +
   #Specified HEX color values to match NBA logo color scheme
