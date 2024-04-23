@@ -38,6 +38,7 @@ head(basic_statistics)
 advanced_statistics <- nba_data %>% select(Salary, eFG., PER:VORP)
 head(advanced_statistics)
 ```
+
 Plot Salaries by Position
 ```{r}
 nba_data$Position <- factor(nba_data$Position, levels = c("PG", "PG-SG", "SG", "SG-PG", "SF", "SF-SG", "SF-PF", "PF", "C"))
@@ -59,6 +60,7 @@ Perform ANOVA Test
 anova_model <- aov(Salary ~ Position, data = nba_data)
 summary(anova_model)
 ```
+
 Perform Tukey's Test (to Identify Positions with Statistically Signifiance Differences in Mean Salaries)
 ```{r}
 tukey_results <- TukeyHSD(anova_model)
@@ -165,7 +167,7 @@ sorted_salary_correlations
 
 Fit Multiple Regression Model
 ```{r}
-linear_model <- lm(Salary ~ PTS + FG + VORP + X2P + FT, data = nba_data)
+linear_model <- lm(Salary ~ PTS + FG + VORP, data = nba_data)
 summary(linear_model)
 
 #Referenced this link: https://www.statology.org/r-vs-r-squared/ to approximate the model correlation
@@ -189,12 +191,12 @@ ggplot(nba_data, aes(x = Salary, y = predicted_salary)) +
   geom_abline(intercept = 0, slope = 1, color = "#da1a33") +
   scale_x_continuous(labels = label_comma()) +
   scale_y_continuous(labels = label_comma()) +
-  labs(x = "Actual Salary", y = "Predicted Salary", title = "Actual vs. Predicted Salaries") +
+  labs(x = "Actual Salaries", y = "Predicted Salaries", title = "Actual vs. Predicted Salaries") +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 12),
-    axis.title.x = element_text(size = 10),
-    axis.title.y = element_text(size = 10),
+    axis.title.x = element_text(size = 10, margin = margin(t = 10, unit = "pt")),
+    axis.title.y = element_text(size = 10, margin = margin(r = 10, unit = "pt")),
     axis.text.x = element_text(size = 6),
     axis.text.y = element_text(size = 6),
     plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm")
