@@ -172,7 +172,7 @@ Fit Multiple Regression Model
 linear_model <- lm(Salary ~ PTS + FG + VORP, data = nba_data)
 summary(linear_model)
 
-#Referenced this link: https://www.statology.org/r-vs-r-squared/ to approximate the model correlation
+#Referenced this link: https://www.statology.org/r-vs-r-squared/ to calculate the model correlation
 model_correlation <- sqrt(summary(linear_model)$r.squared)
 model_correlation
 ```
@@ -205,6 +205,12 @@ ggplot(nba_data, aes(x = Salary, y = predicted_salary)) +
     )
 ```
 
+Verify Multiple Regression Model Correlation (Using Actual vs. Predicted Values)
+```{r}
+values_correlation <- cor(nba_data$Salary, nba_data$predicted_salary)
+values_correlation
+```
+
 Perform Bootstrapping on Multiple Regression Model
 ```{r}
 #Referenced this link: https://www.statmethods.net/advstats/bootstrapping.html for information on bootstrapping
@@ -234,4 +240,3 @@ plot(bootstrap_results, index = 2) #PTS
 plot(bootstrap_results, index = 3) #FG
 plot(bootstrap_results, index = 4) #VORP
 ```
-
